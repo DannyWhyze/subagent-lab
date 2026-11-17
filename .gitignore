@@ -1,0 +1,51 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.env
+*.pem
+*.key
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+*$py.class
+build/
+dist/
+wheels/
+*.egg-info/
+*.egg
+
+# Virtual environments & package managers
+.venv/
+venv/
+env/
+.agents/
+
+# Testing & Linting caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Logs and runtime artifacts
+*.log
+tmp/
+
+# IDE and Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating System artifacts
+.DS_Store
+Thumbs.db
+desktop.ini
+docs_dw/
+
+# Local prototype scratchpads & tutorials in legacy_scripts
+legacy_scripts/subagents_personal_assistant_learn_lc/control_information_flow/
+legacy_scripts/subagents_personal_assistant_learn_lc/human_in_the_loop/
+*.ipynb

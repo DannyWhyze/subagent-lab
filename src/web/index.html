@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subagent Lab Explorer</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-brand">
+            <h1>Subagent Lab Explorer</h1>
+            <span class="status-badge" id="statusBadge" aria-live="polite">Status: Disconnected</span>
+        </div>
+        <div class="header-controls">
+            <label for="patternSelect">Architecture Pattern:</label>
+            <select id="patternSelect" aria-label="Select Architecture Pattern">
+                <option value="">Loading Patterns...</option>
+            </select>
+            <label for="thinkingSelect">Thinking:</label>
+            <select id="thinkingSelect" aria-label="Select Thinking Effort">
+                <option value="off">Off</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <section class="left-panel">
+            <div class="panel-header">
+                <h2>Execution & Dialogue</h2>
+                <div class="action-buttons">
+                    <button id="runBtn" class="btn btn-primary">Run Query</button>
+                    <button id="abortBtn" class="btn btn-danger" disabled>Abort Run</button>
+                    <button id="clearBtn" class="btn btn-secondary">Clear Output</button>
+                </div>
+            </div>
+
+            <div class="chat-container" id="chatContainer" aria-live="polite">
+                <div class="message system-message" id="welcomeMessage">
+                    Select an architecture pattern and enter a prompt to benchmark subagent execution.
+                </div>
+            </div>
+
+            <div class="prompt-input-area">
+                <div class="examples-wrapper" id="examplesWrapper">
+                    <span class="examples-label">Example Prompts:</span>
+                    <div class="examples-chips" id="examplesChips"></div>
+                </div>
+                <textarea id="promptInput" rows="3" placeholder="Enter query (e.g. 'What is the weather in Berlin?' or 'Research Model Context Protocol')..."></textarea>
+            </div>
+        </section>
+
+        <section class="right-panel">
+            <div class="panel-header">
+                <h2>Live Telemetry & Inspector</h2>
+            </div>
+
+            <div class="chess-card hidden" id="chess-panel">
+                <div class="chess-header">
+                    <h3>Conversational Chessboard</h3>
+                    <div class="chess-badges">
+                        <span id="chessTurnBadge" class="chess-badge">Turn: 1 (White)</span>
+                        <span id="chessStatusBadge" class="chess-badge">Status: Ready</span>
+                    </div>
+                </div>
+                <div class="chess-controls">
+                    <button id="chessSpectatorBtn" class="btn btn-secondary btn-sm">Spectator</button>
+                    <button id="chessPlayWhiteBtn" class="btn btn-secondary btn-sm">Play as White</button>
+                    <button id="chessPlayBlackBtn" class="btn btn-secondary btn-sm">Play as Black</button>
+                    <button id="chessResetBtn" class="btn btn-secondary btn-sm">Reset Board</button>
+                </div>
+                <div class="chess-board-wrapper">
+                    <div id="chess-board-view" class="chess-board-view"></div>
+                </div>
+                <div id="chessMoveInfo" class="chess-move-info">Click a piece to move, or run Spectator mode.</div>
+            </div>
+
+            <div class="telemetry-card">
+                <h3>Benchmark Metrics</h3>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <span class="metric-label">TTFT:</span>
+                        <span class="metric-value" id="metricTtft">0.0 ms</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Total Duration:</span>
+                        <span class="metric-value" id="metricDuration">0.0 ms</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Token Count:</span>
+                        <span class="metric-value" id="metricTokens">0</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Tool Calls:</span>
+                        <span class="metric-value" id="metricToolCalls">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inspector-card">
+                <h3>Pattern Metadata</h3>
+                <div id="patternDetails" class="pattern-details">
+                    <p><strong>Framework:</strong> <span id="metaFramework">-</span></p>
+                    <p><strong>Isolation:</strong> <span id="metaIsolation">-</span></p>
+                    <p><strong>Description:</strong> <span id="metaDesc">-</span></p>
+                </div>
+            </div>
+
+            <div class="inspector-card">
+                <h3>Execution Stages & Subagents</h3>
+                <div id="stageTimeline" class="stage-timeline">
+                    <div class="timeline-empty">No active execution</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/js/marked.min.js"></script>
+    <script type="module" src="/static/js/chess_board.js"></script>
+    <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
