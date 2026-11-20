@@ -22,9 +22,13 @@ src/web/
 ├── css/
 │   └── style.css         # Dark theme and layout styles
 └── js/
-    ├── app.js            # Controller, DOM bindings, and sessionStorage persistence
+    ├── app.js            # Main orchestrator, DOM bindings, and stream dispatching (<270 lines)
     ├── stream.js         # SSE reader client with AbortController lifecycle
-    └── chess_board.js    # 8x8 Chessboard component and click-to-move interaction
+    ├── chess_board.js    # 8x8 Chessboard component and click-to-move interaction
+    ├── session_store.js  # Client session persistence and sessionStorage schema handling
+    ├── chat_renderer.js  # Chat DOM streaming buffer, markdown sanitizer, and collapsible containers
+    ├── patterns_controller.js # Patterns dropdown, example prompt chips, and thinking mode gating
+    └── chess_controller.js    # Chess interaction, human move submission, and AI counter-turn coordinator
 ```
 
 ---

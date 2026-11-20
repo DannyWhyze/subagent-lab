@@ -15,6 +15,10 @@ def test_ui_files_exist():
     assert (WEB_DIR / "js" / "stream.js").exists()
     assert (WEB_DIR / "js" / "chess_board.js").exists()
     assert (WEB_DIR / "js" / "marked.min.js").exists()
+    assert (WEB_DIR / "js" / "session_store.js").exists()
+    assert (WEB_DIR / "js" / "chat_renderer.js").exists()
+    assert (WEB_DIR / "js" / "patterns_controller.js").exists()
+    assert (WEB_DIR / "js" / "chess_controller.js").exists()
 
 
 @pytest.mark.asyncio
@@ -48,6 +52,10 @@ def test_rule_22_no_decorative_emojis():
         WEB_DIR / "css" / "style.css",
         WEB_DIR / "js" / "app.js",
         WEB_DIR / "js" / "stream.js",
+        WEB_DIR / "js" / "session_store.js",
+        WEB_DIR / "js" / "chat_renderer.js",
+        WEB_DIR / "js" / "patterns_controller.js",
+        WEB_DIR / "js" / "chess_controller.js",
     ]
 
     for file_path in files_to_check:
@@ -60,10 +68,13 @@ def test_rule_47_session_storage_and_abort():
     """Verify Rule 47: sessionStorage schema and AbortController implementation."""
     app_js = (WEB_DIR / "js" / "app.js").read_text(encoding="utf-8")
     stream_js = (WEB_DIR / "js" / "stream.js").read_text(encoding="utf-8")
+    session_store_js = (WEB_DIR / "js" / "session_store.js").read_text(encoding="utf-8")
+    patterns_controller_js = (WEB_DIR / "js" / "patterns_controller.js").read_text(encoding="utf-8")
+    chat_renderer_js = (WEB_DIR / "js" / "chat_renderer.js").read_text(encoding="utf-8")
 
     # sessionStorage persistence
-    assert "sessionStorage.setItem" in app_js
-    assert "sessionStorage.getItem" in app_js
+    assert "sessionStorage.setItem" in session_store_js
+    assert "sessionStorage.getItem" in session_store_js
     assert "last_pattern_id" in app_js
     assert "chat_history" in app_js
 
@@ -73,11 +84,11 @@ def test_rule_47_session_storage_and_abort():
     assert "currentAbortController.abort()" in stream_js
 
     # Dynamic example prompts handling
-    assert "renderExamplePrompts" in app_js
-    assert "example-chip" in app_js
+    assert "renderExamplePrompts" in patterns_controller_js
+    assert "example-chip" in patterns_controller_js
 
     # Persona speaker distinction (Rule 22 compliant)
-    assert "speaker-badge" in app_js
+    assert "speaker-badge" in chat_renderer_js
     style_css = (WEB_DIR / "css" / "style.css").read_text(encoding="utf-8")
     assert ".speaker-badge" in style_css
 
@@ -105,14 +116,15 @@ def test_thinking_mode_ui_elements():
     assert ".thought-content" in css
     assert "select:disabled" in css
 
-    app_js = (WEB_DIR / "js" / "app.js").read_text(encoding="utf-8")
-    assert "thinkingSelect" in app_js
-    assert "thinkingSelect.disabled" in app_js
-    assert "disabled_na" in app_js
-    assert "Disabled (N/A)" in app_js
-    assert "appendThought" in app_js
-    assert "thought" in app_js
-    assert "getEffectiveThinking" in app_js
+    patterns_controller_js = (WEB_DIR / "js" / "patterns_controller.js").read_text(encoding="utf-8")
+    chat_renderer_js = (WEB_DIR / "js" / "chat_renderer.js").read_text(encoding="utf-8")
+    assert "thinkingSelect" in patterns_controller_js
+    assert "thinkingSelect.disabled" in patterns_controller_js
+    assert "disabled_na" in patterns_controller_js
+    assert "Disabled (N/A)" in patterns_controller_js
+    assert "appendThought" in chat_renderer_js
+    assert "thought" in chat_renderer_js
+    assert "getEffectiveThinking" in patterns_controller_js
 
 
 def test_code_box_ui_elements():
@@ -122,10 +134,10 @@ def test_code_box_ui_elements():
     assert ".code-summary" in css
     assert ".code-content" in css
 
-    app_js = (WEB_DIR / "js" / "app.js").read_text(encoding="utf-8")
-    assert "appendCode" in app_js
-    assert "code-box" in app_js
-    assert "Generated Execution Code" in app_js
+    chat_renderer_js = (WEB_DIR / "js" / "chat_renderer.js").read_text(encoding="utf-8")
+    assert "appendCode" in chat_renderer_js
+    assert "code-box" in chat_renderer_js
+    assert "Generated Execution Code" in chat_renderer_js
 
 
 def test_persistent_thought_and_compact_tool_containers():
@@ -138,19 +150,21 @@ def test_persistent_thought_and_compact_tool_containers():
     assert ".subagent-content" in css
     assert "flex-shrink: 0" in css
 
+    chat_renderer_js = (WEB_DIR / "js" / "chat_renderer.js").read_text(encoding="utf-8")
     app_js = (WEB_DIR / "js" / "app.js").read_text(encoding="utf-8")
-    assert "commitActiveThought" in app_js
-    assert "hadInterveningToolCall" in app_js
-    assert "tool-summary" in app_js
-    assert "subagent-summary" in app_js
+    assert "commitActiveThought" in chat_renderer_js
+    assert "hadInterveningToolCall" in chat_renderer_js
+    assert "tool-summary" in chat_renderer_js
+    assert "subagent-summary" in chat_renderer_js
+    assert "details.open = true" not in chat_renderer_js
     assert "details.open = true" not in app_js
 
 
 def test_done_event_streaming_duplicate_protection():
-    """Verify that app.js does not duplicate streamed tokens upon receiving final_answer in done event."""
-    app_js = (WEB_DIR / "js" / "app.js").read_text(encoding="utf-8")
-    assert "hasStreamedAssistant" in app_js
-    assert "!hasStreamedAssistant && payload && payload.final_answer" in app_js
+    """Verify that chat_renderer does not duplicate streamed tokens upon receiving final_answer in done event."""
+    chat_renderer_js = (WEB_DIR / "js" / "chat_renderer.js").read_text(encoding="utf-8")
+    assert "hasStreamedAssistant" in chat_renderer_js
+    assert "!hasStreamedAssistant && payload && payload.final_answer" in chat_renderer_js
 
 
 def test_js_modules_valid_syntax():
@@ -165,6 +179,10 @@ def test_js_modules_valid_syntax():
     js_files = [
         WEB_DIR / "js" / "chess_board.js",
         WEB_DIR / "js" / "stream.js",
+        WEB_DIR / "js" / "session_store.js",
+        WEB_DIR / "js" / "chat_renderer.js",
+        WEB_DIR / "js" / "patterns_controller.js",
+        WEB_DIR / "js" / "chess_controller.js",
         WEB_DIR / "js" / "app.js",
     ]
 
@@ -183,13 +201,16 @@ def test_js_modules_valid_syntax():
 def test_ui_security_and_accessibility():
     """Verify XSS sanitization, accessibility ARIA attributes, responsive layout, and zero alert calls."""
     app_js = (WEB_DIR / "js" / "app.js").read_text(encoding="utf-8")
+    chat_renderer_js = (WEB_DIR / "js" / "chat_renderer.js").read_text(encoding="utf-8")
     chess_board_js = (WEB_DIR / "js" / "chess_board.js").read_text(encoding="utf-8")
     index_html = (WEB_DIR / "index.html").read_text(encoding="utf-8")
     style_css = (WEB_DIR / "css" / "style.css").read_text(encoding="utf-8")
 
     # Security: safe markdown rendering and zero raw alert() calls
-    assert "renderSafeMarkdown" in app_js
+    assert "renderSafeMarkdown" in chat_renderer_js
     assert "alert(" not in app_js
+    assert "alert(" not in chat_renderer_js
+    assert "showSystemNotice" in chat_renderer_js
     assert "showSystemNotice" in app_js
 
     # Accessibility (a11y)
